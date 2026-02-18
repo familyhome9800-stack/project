@@ -12,3 +12,5 @@
 
 ## Ссылка на сайт
  https://familyhome9800-stack.github.io/project/
+ ## Ссылка на страницу с ошибкой
+  https://familyhome9800-stack.github.io/project/404.html
