@@ -10,4 +10,4 @@
 - Главная страница (index.html)
 
 ## Ссылка на сайт
-https://[familyhome9800-stack].github.io/Самая-Красивая
+ https://familyhome9800-stack.github.io/project/
