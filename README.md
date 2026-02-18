@@ -8,6 +8,7 @@
 
 ## Структура сайта
 - Главная страница (index.html)
+- ошибка 404 (404.html)
 
 ## Ссылка на сайт
  https://familyhome9800-stack.github.io/project/
