@@ -6,11 +6,10 @@
 ## Использованный фреймворк
 - **Bulma** - современный CSS-фреймворк
 
-## Структура сайта
-- Главная страница (index.html)
-- ошибка 404 (404.html)
-
+## Главная страница (index.html)
+ошибка 404 (404.html)
 ## Ссылка на сайт
- https://familyhome9800-stack.github.io/project/
- ## Ссылка на страницу с ошибкой
-  https://familyhome9800-stack.github.io/project/404.html
+https://familyhome9800-stack.github.io/project/
+
+## Ссылка на страницу с ошибкой
+https://familyhome9800-stack.github.io/project/404.html
