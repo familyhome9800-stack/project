@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Самая Красивая | Магазин одежды для мам и детей</title>
+    <!-- Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -189,7 +191,7 @@
             box-shadow: 0 8px 25px rgba(183,110,121,0.4);
         }
 
-        /* Hero - главный экран */
+        /* главный экран */
         .hero {
             background: #fcf6f0;
             padding: 80px 0;
@@ -546,6 +548,140 @@
             color: #9e5b65;
         }
 
+        /* МОДАЛЬНОЕ ОКНО для заказа звонка */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 60px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(183,110,121,0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            color: #b76e79;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(183,110,121,0.1);
+            transform: rotate(90deg);
+        }
+
+        .modal-title {
+            font-size: 32px;
+            font-weight: 400;
+            background: linear-gradient(75deg, #d78894, #e6be8a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .modal-form .field {
+            margin-bottom: 20px;
+        }
+
+        .modal-form .label {
+            color: #573f3f;
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .modal-form .control {
+            position: relative;
+        }
+
+        .modal-form .input {
+            width: 100%;
+            border-radius: 30px;
+            border: 2px solid #f0e4d5;
+            padding: 12px 20px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .modal-form .input:focus {
+            border-color: #b76e79;
+            box-shadow: 0 0 0 3px rgba(183,110,121,0.2);
+        }
+
+        .modal-form .checkbox {
+            color: #573f3f;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .modal-form .checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #b76e79;
+        }
+
+        .modal-form .button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #b76e79, #d4a59a);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .modal-form .button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(183,110,121,0.4);
+        }
+
         /* Адаптивность */
         @media (max-width: 768px) {
             .map-overlay {
@@ -567,6 +703,10 @@
 
             .carousel-btn.next {
                 right: -20px;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
             }
         }
 
@@ -628,12 +768,54 @@
                 </div>
             </div>
 
-            <button class="call-button">Заказать звонок</button>
+            <button class="call-button" onclick="openCallModal()">Заказать звонок</button>
         </div>
 
-        <!-- Затемнение фона -->
+        <!-- Затемнение фона для бургер-меню -->
         <div class="menu-overlay" id="menuOverlay"></div>
     </header>
+
+    <!-- МОДАЛЬНОЕ ОКНО ЗАКАЗА ЗВОНКА -->
+    <div class="modal" id="callModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeCallModal()">×</button>
+            <h2 class="modal-title">Заказать звонок</h2>
+            
+            <form class="modal-form" id="callForm">
+                <div class="field">
+                    <label class="label">Ваше имя</label>
+                    <div class="control">
+                        <input class="input" type="text" id="callName" placeholder="Введите ваше имя" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Телефон</label>
+                    <div class="control">
+                        <input class="input" type="tel" id="callPhone" placeholder="+7 (___) ___-__-__" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Удобное время для звонка</label>
+                    <div class="control">
+                        <input class="input" type="text" id="callTime" placeholder="Например: после 18:00">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox" id="callAgreement" required>
+                            Я согласен на обработку персональных данных
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="button" id="callSubmitBtn">Отправить</button>
+            </form>
+        </div>
+    </div>
 
     <!-- главный баннер -->
     <section class="hero">
@@ -770,7 +952,9 @@
 
     <!-- Подключение скриптов -->
     <script src="scripts/reviews-api.js"></script>
-<script src="scripts/menu.js"></script>
-<script src="scripts/reviews-carousel.js"></script>
+    <script src="scripts/menu.js"></script>
+    <script src="scripts/reviews-carousel.js"></script>
+    <script src="scripts/validation.js"></script>
+    <script src="scripts/consoleLogger.js"></script>
 </body>
 </html>
