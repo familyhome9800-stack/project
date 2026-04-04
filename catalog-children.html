@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Одежда для детей | Самая Красивая</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
+        body { background: #fffaf4; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        .header { background: #ffffff; padding: 16px 0; border-bottom: 1px solid #f0e4d5; position: relative; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; }
+        .cart-icon-wrapper { position: relative; cursor: pointer; margin-right: 20px; }
+        .cart-icon-wrapper:hover { transform: scale(1.1); }
+        .cart-count { position: absolute; top: -10px; right: -12px; background: #b76e79; color: white; font-size: 12px; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: none; align-items: center; justify-content: center; }
+        
+        .burger-menu { display: flex; flex-direction: column; justify-content: space-between; width: 30px; height: 22px; cursor: pointer; z-index: 1001; }
+        .burger-menu span { display: block; width: 100%; height: 3px; background: #b76e79; border-radius: 3px; transition: 0.3s; }
+        .burger-menu.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .burger-menu.active span:nth-child(2) { opacity: 0; }
+        .burger-menu.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+        
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 999; }
+        .menu-overlay.active { opacity: 1; visibility: visible; }
+        
+        .dropdown-menu { position: absolute; top: 80px; right: 20px; width: 320px; background: white; border-radius: 30px; padding: 30px; box-shadow: 0 15px 40px rgba(183,110,121,0.2); border: 1px solid #f5e0d3; opacity: 0; visibility: hidden; transform: translateY(-20px); transition: 0.3s; z-index: 1000; }
+        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0); }
+        .menu-title { font-size: 36px; font-weight: 400; background: linear-gradient(75deg, #d78894, #e6be8a); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 30px; border-bottom: 2px solid #f3d9dc; padding-bottom: 15px; }
+        .menu-section-title { font-size: 20px; font-weight: 600; color: #b76e79; margin-bottom: 15px; }
+        .menu-items { display: flex; flex-direction: column; gap: 12px; }
+        .menu-item { font-size: 18px; color: #3b2b2b; text-decoration: none; padding: 8px 0; border-bottom: 1px dashed #f0dacd; transition: 0.2s; }
+        .menu-item:hover { color: #b76e79; padding-left: 10px; }
+        .call-button { display: block; width: 100%; padding: 16px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border-radius: 50px; font-size: 20px; font-weight: 500; text-align: center; margin-top: 20px; border: none; cursor: pointer; }
+        
+        .catalog-page { padding: 60px 0; }
+        .filter-sidebar { background: white; border-radius: 30px; padding: 25px; box-shadow: 0 6px 18px #f2e1d4; border: 1px solid #f5e0d3; position: sticky; top: 20px; }
+        .filter-title { font-size: 22px; font-weight: 500; color: #b76e79; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f3d9dc; }
+        .filter-group { margin-bottom: 25px; }
+        .filter-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 10px 0; }
+        .filter-header:hover { color: #b76e79; }
+        .filter-content { display: none; padding-left: 15px; margin-top: 10px; }
+        .filter-content.active { display: block; }
+        .filter-header i { transition: transform 0.3s; }
+        .filter-header.active i { transform: rotate(180deg); }
+        .filter-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+        .filter-option input { width: 18px; height: 18px; accent-color: #b76e79; }
+        .reset-filters { width: 100%; padding: 12px; background: transparent; border: 2px solid #b76e79; color: #b76e79; border-radius: 50px; cursor: pointer; margin-top: 15px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .product-card { background: white; border-radius: 24px; padding: 20px; box-shadow: 0 6px 18px #f2e1d4; transition: 0.3s; border: 1px solid #f5e0d3; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-image { width: 100%; height: 200px; background: #faece5; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 60px; margin-bottom: 15px; }
+        .product-title { font-size: 20px; font-weight: 500; color: #402d2d; }
+        .product-price { font-size: 24px; font-weight: 600; color: #b4515b; margin: 10px 0; }
+        .product-size { font-size: 14px; color: #7f5a5a; margin-bottom: 10px; }
+        .add-to-cart { width: 100%; padding: 12px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border: none; border-radius: 50px; cursor: pointer; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal.active { display: flex; opacity: 1; }
+        .modal-content { background: white; max-width: 500px; width: 90%; border-radius: 60px; padding: 40px; position: relative; }
+        .modal-content.max-width-600 { max-width: 600px; }
+        .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 30px; color: #b76e79; cursor: pointer; }
+        .modal-title { font-size: 32px; font-weight: 400; background: linear-gradient(75deg, #d78894, #e6be8a); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 30px; text-align: center; }
+        .modal-form .field { margin-bottom: 20px; }
+        .modal-form .label { color: #573f3f; margin-bottom: 5px; display: block; }
+        .modal-form .input { width: 100%; border-radius: 30px; border: 2px solid #f0e4d5; padding: 12px 20px; }
+        .modal-form .button { width: 100%; padding: 16px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border: none; border-radius: 50px; font-size: 20px; cursor: pointer; margin-top: 20px; }
+        
+        .cart-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #f0e4d5; }
+        .cart-item-image { width: 50px; height: 50px; background: #faece5; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: 500; color: #402d2d; }
+        .cart-item-price { color: #b76e79; font-size: 14px; }
+        .cart-item-quantity { display: flex; align-items: center; gap: 10px; }
+        .cart-qty-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #b76e79; background: white; color: #b76e79; cursor: pointer; }
+        .cart-qty-btn:hover { background: #b76e79; color: white; }
+        .cart-item-total { min-width: 70px; font-weight: 600; color: #b4515b; }
+        .cart-remove-btn { background: none; border: none; color: #f14668; cursor: pointer; font-size: 18px; }
+        
+        .row { display: flex; gap: 30px; flex-wrap: wrap; }
+        @media (max-width: 768px) { .filter-sidebar { position: static; margin-bottom: 30px; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="index.html" style="text-decoration: none;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-arrow-left" style="color: #b76e79; font-size: 20px;"></i>
+                    <span style="color: #b76e79; font-weight: 500;">На главную</span>
+                </div>
+            </a>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div class="cart-icon-wrapper" onclick="openCart()">
+                    <i class="fas fa-shopping-bag" style="font-size: 24px; color: #b76e79; cursor: pointer;"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <div class="burger-menu" id="burgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div class="menu-title">Самая Красивая</div>
+            <div class="menu-section">
+                <div class="menu-section-title">Каталог</div>
+                <div class="menu-items">
+                    <a href="catalog-women.html" class="menu-item">Одежда для мам</a>
+                    <a href="catalog-children.html" class="menu-item">Одежда для детей</a>
+                    <a href="catalog-accessories.html" class="menu-item">Аксессуары</a>
+                </div>
+            </div>
+            <div class="menu-section">
+                <div class="menu-items">
+                    <a href="index.html#reviews" class="menu-item">Отзывы</a>
+                    <a href="index.html#contacts" class="menu-item">Как нас найти?</a>
+                </div>
+            </div>
+            <button class="call-button" onclick="openCallModal()">Заказать звонок</button>
+        </div>
+        <div class="menu-overlay" id="menuOverlay"></div>
+    </header>
+
+    <main class="catalog-page">
+        <div class="container">
+            <div class="row">
+                <aside class="filter-sidebar" style="flex: 1; min-width: 250px;">
+                    <h3 class="filter-title">👶 Фильтры для детей</h3>
+                    
+                    <div class="filter-group">
+                        <div class="filter-header" onclick="toggleFilter(this)">
+                            <h4>📅 Возраст</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="filter-content">
+                            <label class="filter-option"><input type="checkbox" value="0-3" class="age-filter"> 0-3 месяца</label>
+                            <label class="filter-option"><input type="checkbox" value="3-6" class="age-filter"> 3-6 месяца</label>
+                            <label class="filter-option"><input type="checkbox" value="6-9" class="age-filter"> 6-9 месяца</label>
+                            <label class="filter-option"><input type="checkbox" value="9-12" class="age-filter"> 9-12 месяца</label>
+                            <label class="filter-option"><input type="checkbox" value="1-2" class="age-filter"> 1-2 года</label>
+                            <label class="filter-option"><input type="checkbox" value="2-3" class="age-filter"> 2-3 года</label>
+                            <label class="filter-option"><input type="checkbox" value="3-4" class="age-filter"> 3-4 года</label>
+                            <label class="filter-option"><input type="checkbox" value="4-5" class="age-filter"> 4-5 лет</label>
+                            <label class="filter-option"><input type="checkbox" value="5-6" class="age-filter"> 5-6 лет</label>
+                            <label class="filter-option"><input type="checkbox" value="6-7" class="age-filter"> 6-7 лет</label>
+                            <label class="filter-option"><input type="checkbox" value="7-8" class="age-filter"> 7-8 лет</label>
+                            <label class="filter-option"><input type="checkbox" value="8-9" class="age-filter"> 8-9 лет</label>
+                            <label class="filter-option"><input type="checkbox" value="9-10" class="age-filter"> 9-10 лет</label>
+                            <label class="filter-option"><input type="checkbox" value="10-11" class="age-filter"> 10-11 лет</label>
+                            <label class="filter-option"><input type="checkbox" value="11-12" class="age-filter"> 11-12 лет</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-header" onclick="toggleFilter(this)">
+                            <h4>📏 Рост (см)</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="filter-content">
+                            <label class="filter-option"><input type="checkbox" value="56-62" class="height-filter"> 56-62 см</label>
+                            <label class="filter-option"><input type="checkbox" value="62-68" class="height-filter"> 62-68 см</label>
+                            <label class="filter-option"><input type="checkbox" value="68-74" class="height-filter"> 68-74 см</label>
+                            <label class="filter-option"><input type="checkbox" value="74-80" class="height-filter"> 74-80 см</label>
+                            <label class="filter-option"><input type="checkbox" value="80-86" class="height-filter"> 80-86 см</label>
+                            <label class="filter-option"><input type="checkbox" value="86-92" class="height-filter"> 86-92 см</label>
+                            <label class="filter-option"><input type="checkbox" value="92-98" class="height-filter"> 92-98 см</label>
+                            <label class="filter-option"><input type="checkbox" value="98-104" class="height-filter"> 98-104 см</label>
+                            <label class="filter-option"><input type="checkbox" value="104-110" class="height-filter"> 104-110 см</label>
+                            <label class="filter-option"><input type="checkbox" value="110-116" class="height-filter"> 110-116 см</label>
+                            <label class="filter-option"><input type="checkbox" value="116-122" class="height-filter"> 116-122 см</label>
+                            <label class="filter-option"><input type="checkbox" value="122-128" class="height-filter"> 122-128 см</label>
+                            <label class="filter-option"><input type="checkbox" value="128-134" class="height-filter"> 128-134 см</label>
+                            <label class="filter-option"><input type="checkbox" value="134-140" class="height-filter"> 134-140 см</label>
+                            <label class="filter-option"><input type="checkbox" value="140-146" class="height-filter"> 140-146 см</label>
+                            <label class="filter-option"><input type="checkbox" value="146-152" class="height-filter"> 146-152 см</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-header" onclick="toggleFilter(this)">
+                            <h4>👤 Пол</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="filter-content">
+                            <label class="filter-option"><input type="checkbox" value="boy" class="gender-filter"> Мальчик</label>
+                            <label class="filter-option"><input type="checkbox" value="girl" class="gender-filter"> Девочка</label>
+                            <label class="filter-option"><input type="checkbox" value="unisex" class="gender-filter"> Унисекс</label>
+                        </div>
+                    </div>
+                    
+                    <button id="resetFilters" class="reset-filters">Сбросить все фильтры</button>
+                </aside>
+                
+                <div style="flex: 3;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap;">
+                        <h2 style="color: #573f3f;">Одежда для детей</h2>
+                        <select id="sortSelect" style="border-radius: 30px; padding: 10px 20px; border: 1px solid #f0e4d5;">
+                            <option value="default">Сортировка</option>
+                            <option value="price-asc">Цена: по возрастанию</option>
+                            <option value="price-desc">Цена: по убыванию</option>
+                            <option value="name-asc">Название: А-Я</option>
+                            <option value="name-desc">Название: Я-А</option>
+                        </select>
+                    </div>
+                    
+                    <div class="products-grid" id="productsGrid"></div>
+                    <div id="noProducts" style="text-align: center; padding: 50px; display: none;">
+                        <i class="fas fa-baby fa-3x" style="color: #edd7cb;"></i>
+                        <p style="color: #7f5a5a; margin-top: 20px;">Товары не найдены</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="callModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeCallModal()">×</button>
+            <h2 class="modal-title">Заказать звонок</h2>
+            <form class="modal-form" id="callForm">
+                <div class="field"><label class="label">Ваше имя</label><input class="input" type="text" id="callName" required></div>
+                <div class="field"><label class="label">Телефон</label><input class="input" type="tel" id="callPhone" required></div>
+                <div class="field"><label class="label">Удобное время</label><input class="input" type="text" id="callTime"></div>
+                <div class="field"><label class="checkbox"><input type="checkbox" id="callAgreement" required> Я согласен на обработку данных</label></div>
+                <button type="submit" class="button">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="cartModal">
+        <div class="modal-content max-width-600" style="max-width: 600px;">
+            <button class="modal-close" onclick="closeCart()">×</button>
+            <h2 class="modal-title">🛍️ Корзина</h2>
+            <div id="cartItems" style="max-height: 400px; overflow-y: auto;"></div>
+            <div style="border-top: 2px solid #f0e4d5; margin-top: 20px; padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; font-size: 22px; font-weight: 600; color: #b4515b;">
+                    <span>Итого:</span>
+                    <span id="cartTotal">0</span>
+                    <span>₽</span>
+                </div>
+                <button class="button" style="width: 100%; margin-top: 20px;" onclick="alert('Оформление заказа будет доступно в следующей версии!')">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="background: #f2d9d0; padding: 20px; text-align: center;">
+        <p style="font-size: 20px;">Самая Красивая • твой любимый магазин</p>
+    </div>
+
+    <script src="scripts/menu.js"></script>
+    <script src="scripts/cart.js"></script>
+    <script>
+        const products = [
+            { id: 1, name: "Боди для новорожденного", age: "0-3", height: "56-62", gender: "unisex", price: 599, image: "👕" },
+            { id: 2, name: "Ползунки хлопковые", age: "3-6", height: "62-68", gender: "unisex", price: 449, image: "👖" },
+            { id: 3, name: "Платье для девочки", age: "1-2", height: "80-86", gender: "girl", price: 899, image: "👗" },
+            { id: 4, name: "Комбинезон для мальчика", age: "2-3", height: "86-92", gender: "boy", price: 1299, image: "🧥" },
+            { id: 5, name: "Пижама детская", age: "3-4", height: "98-104", gender: "unisex", price: 799, image: "👕" },
+            { id: 6, name: "Джинсы для девочки", age: "5-6", height: "110-116", gender: "girl", price: 999, image: "👖" },
+            { id: 7, name: "Свитшот с принтом", age: "6-7", height: "116-122", gender: "unisex", price: 1099, image: "👚" },
+            { id: 8, name: "Школьная форма", age: "7-8", height: "122-128", gender: "unisex", price: 1899, image: "👔" },
+            { id: 9, name: "Спортивный костюм", age: "8-9", height: "128-134", gender: "boy", price: 1499, image: "🏃" },
+            { id: 10, name: "Платье выпускное", age: "10-11", height: "140-146", gender: "girl", price: 2499, image: "👗" },
+            { id: 11, name: "Пальто зимнее", age: "11-12", height: "146-152", gender: "unisex", price: 2999, image: "🧥" }
+        ];
+
+        let currentProducts = [...products];
+
+        function toggleFilter(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.classList.toggle('active');
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const noProducts = document.getElementById('noProducts');
+            
+            if (currentProducts.length === 0) {
+                grid.style.display = 'none';
+                noProducts.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            noProducts.style.display = 'none';
+            
+            grid.innerHTML = currentProducts.map(product => `
+                <div class="product-card">
+                    <div class="product-image">${product.image}</div>
+                    <h3 class="product-title">${product.name}</h3>
+                    <div class="product-size">Возраст: ${product.age} мес / Рост: ${product.height} см</div>
+                    <div class="product-price">${product.price}₽</div>
+                    <button class="add-to-cart" onclick="addToCart({id: ${product.id}, name: '${product.name}', price: ${product.price}, image: '${product.image}'})">
+                        <i class="fas fa-shopping-cart"></i> В корзину
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function applyFilters() {
+            const selectedAges = Array.from(document.querySelectorAll('.age-filter:checked')).map(cb => cb.value);
+            const selectedHeights = Array.from(document.querySelectorAll('.height-filter:checked')).map(cb => cb.value);
+            const selectedGenders = Array.from(document.querySelectorAll('.gender-filter:checked')).map(cb => cb.value);
+            
+            currentProducts = products.filter(product => {
+                if (selectedAges.length > 0 && !selectedAges.includes(product.age)) return false;
+                if (selectedHeights.length > 0 && !selectedHeights.includes(product.height)) return false;
+                if (selectedGenders.length > 0 && !selectedGenders.includes(product.gender)) return false;
+                return true;
+            });
+            
+            applySort();
+        }
+
+        function applySort() {
+            const sortValue = document.getElementById('sortSelect').value;
+            if (sortValue === 'price-asc') currentProducts.sort((a, b) => a.price - b.price);
+            else if (sortValue === 'price-desc') currentProducts.sort((a, b) => b.price - a.price);
+            else if (sortValue === 'name-asc') currentProducts.sort((a, b) => a.name.localeCompare(b.name));
+            else if (sortValue === 'name-desc') currentProducts.sort((a, b) => b.name.localeCompare(a.name));
+            renderProducts();
+        }
+
+        function resetFilters() {
+            document.querySelectorAll('.age-filter:checked, .height-filter:checked, .gender-filter:checked').forEach(cb => cb.checked = false);
+            document.getElementById('sortSelect').value = 'default';
+            currentProducts = [...products];
+            renderProducts();
+        }
+
+        document.getElementById('resetFilters').addEventListener('click', resetFilters);
+        document.querySelectorAll('.age-filter, .height-filter, .gender-filter').forEach(cb => cb.addEventListener('change', applyFilters));
+        document.getElementById('sortSelect').addEventListener('change', applyFilters);
+        
+        renderProducts();
+    </script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Одежда для мам | Самая Красивая</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
+        body { background: #fffaf4; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Хедер */
+        .header { background: #ffffff; padding: 16px 0; border-bottom: 1px solid #f0e4d5; position: relative; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; }
+        .cart-icon-wrapper { position: relative; cursor: pointer; margin-right: 20px; }
+        .cart-icon-wrapper:hover { transform: scale(1.1); }
+        .cart-count { position: absolute; top: -10px; right: -12px; background: #b76e79; color: white; font-size: 12px; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: none; align-items: center; justify-content: center; }
+        
+        /* Бургер */
+        .burger-menu { display: flex; flex-direction: column; justify-content: space-between; width: 30px; height: 22px; cursor: pointer; z-index: 1001; }
+        .burger-menu span { display: block; width: 100%; height: 3px; background: #b76e79; border-radius: 3px; transition: 0.3s; }
+        .burger-menu.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .burger-menu.active span:nth-child(2) { opacity: 0; }
+        .burger-menu.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+        
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 999; }
+        .menu-overlay.active { opacity: 1; visibility: visible; }
+        
+        .dropdown-menu { position: absolute; top: 80px; right: 20px; width: 320px; background: white; border-radius: 30px; padding: 30px; box-shadow: 0 15px 40px rgba(183,110,121,0.2); border: 1px solid #f5e0d3; opacity: 0; visibility: hidden; transform: translateY(-20px); transition: 0.3s; z-index: 1000; }
+        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0); }
+        .menu-title { font-size: 36px; font-weight: 400; background: linear-gradient(75deg, #d78894, #e6be8a); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 30px; border-bottom: 2px solid #f3d9dc; padding-bottom: 15px; }
+        .menu-section-title { font-size: 20px; font-weight: 600; color: #b76e79; margin-bottom: 15px; }
+        .menu-items { display: flex; flex-direction: column; gap: 12px; }
+        .menu-item { font-size: 18px; color: #3b2b2b; text-decoration: none; padding: 8px 0; border-bottom: 1px dashed #f0dacd; transition: 0.2s; }
+        .menu-item:hover { color: #b76e79; padding-left: 10px; }
+        .call-button { display: block; width: 100%; padding: 16px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border-radius: 50px; font-size: 20px; font-weight: 500; text-align: center; margin-top: 20px; border: none; cursor: pointer; }
+        
+        /* Каталог */
+        .catalog-page { padding: 60px 0; }
+        .filter-sidebar { background: white; border-radius: 30px; padding: 25px; box-shadow: 0 6px 18px #f2e1d4; border: 1px solid #f5e0d3; position: sticky; top: 20px; }
+        .filter-title { font-size: 22px; font-weight: 500; color: #b76e79; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f3d9dc; }
+        .filter-group { margin-bottom: 25px; }
+        .filter-group h4 { font-size: 18px; color: #573f3f; margin-bottom: 12px; }
+        .filter-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 10px 0; }
+        .filter-header:hover { color: #b76e79; }
+        .filter-content { display: none; padding-left: 15px; margin-top: 10px; }
+        .filter-content.active { display: block; }
+        .filter-header i { transition: transform 0.3s; }
+        .filter-header.active i { transform: rotate(180deg); }
+        .filter-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+        .filter-option input { width: 18px; height: 18px; accent-color: #b76e79; }
+        .reset-filters { width: 100%; padding: 12px; background: transparent; border: 2px solid #b76e79; color: #b76e79; border-radius: 50px; cursor: pointer; margin-top: 15px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .product-card { background: white; border-radius: 24px; padding: 20px; box-shadow: 0 6px 18px #f2e1d4; transition: 0.3s; border: 1px solid #f5e0d3; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-image { width: 100%; height: 200px; background: #faece5; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 60px; margin-bottom: 15px; }
+        .product-title { font-size: 20px; font-weight: 500; color: #402d2d; }
+        .product-price { font-size: 24px; font-weight: 600; color: #b4515b; margin: 10px 0; }
+        .product-size { font-size: 14px; color: #7f5a5a; margin-bottom: 10px; }
+        .add-to-cart { width: 100%; padding: 12px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border: none; border-radius: 50px; cursor: pointer; }
+        
+        /* Модальные окна */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal.active { display: flex; opacity: 1; }
+        .modal-content { background: white; max-width: 500px; width: 90%; border-radius: 60px; padding: 40px; position: relative; }
+        .modal-content.max-width-600 { max-width: 600px; }
+        .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 30px; color: #b76e79; cursor: pointer; }
+        .modal-title { font-size: 32px; font-weight: 400; background: linear-gradient(75deg, #d78894, #e6be8a); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 30px; text-align: center; }
+        .modal-form .field { margin-bottom: 20px; }
+        .modal-form .label { color: #573f3f; margin-bottom: 5px; display: block; }
+        .modal-form .input { width: 100%; border-radius: 30px; border: 2px solid #f0e4d5; padding: 12px 20px; }
+        .modal-form .button { width: 100%; padding: 16px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border: none; border-radius: 50px; font-size: 20px; cursor: pointer; margin-top: 20px; }
+        
+        /* Корзина */
+        .cart-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #f0e4d5; }
+        .cart-item-image { width: 50px; height: 50px; background: #faece5; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: 500; color: #402d2d; }
+        .cart-item-price { color: #b76e79; font-size: 14px; }
+        .cart-item-quantity { display: flex; align-items: center; gap: 10px; }
+        .cart-qty-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #b76e79; background: white; color: #b76e79; cursor: pointer; }
+        .cart-qty-btn:hover { background: #b76e79; color: white; }
+        .cart-item-total { min-width: 70px; font-weight: 600; color: #b4515b; }
+        .cart-remove-btn { background: none; border: none; color: #f14668; cursor: pointer; font-size: 18px; }
+        
+        .row { display: flex; gap: 30px; flex-wrap: wrap; }
+        @media (max-width: 768px) { .filter-sidebar { position: static; margin-bottom: 30px; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="index.html" style="text-decoration: none;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-arrow-left" style="color: #b76e79; font-size: 20px;"></i>
+                    <span style="color: #b76e79; font-weight: 500;">На главную</span>
+                </div>
+            </a>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div class="cart-icon-wrapper" onclick="openCart()">
+                    <i class="fas fa-shopping-bag" style="font-size: 24px; color: #b76e79; cursor: pointer;"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <div class="burger-menu" id="burgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div class="menu-title">Самая Красивая</div>
+            <div class="menu-section">
+                <div class="menu-section-title">Каталог</div>
+                <div class="menu-items">
+                    <a href="catalog-women.html" class="menu-item">Одежда для мам</a>
+                    <a href="catalog-children.html" class="menu-item">Одежда для детей</a>
+                    <a href="catalog-accessories.html" class="menu-item">Аксессуары</a>
+                </div>
+            </div>
+            <div class="menu-section">
+                <div class="menu-items">
+                    <a href="index.html#reviews" class="menu-item">Отзывы</a>
+                    <a href="index.html#contacts" class="menu-item">Как нас найти?</a>
+                </div>
+            </div>
+            <button class="call-button" onclick="openCallModal()">Заказать звонок</button>
+        </div>
+        <div class="menu-overlay" id="menuOverlay"></div>
+    </header>
+
+    <main class="catalog-page">
+        <div class="container">
+            <div class="row">
+                <aside class="filter-sidebar" style="flex: 1; min-width: 250px;">
+                    <h3 class="filter-title">👗 Фильтры для мам</h3>
+                    
+                    <div class="filter-group">
+                        <div class="filter-header" onclick="toggleFilter(this)">
+                            <h4>📏 Размер одежды</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="filter-content">
+                            <label class="filter-option"><input type="checkbox" value="XS" class="size-filter"> XS (42-44)</label>
+                            <label class="filter-option"><input type="checkbox" value="S" class="size-filter"> S (44-46)</label>
+                            <label class="filter-option"><input type="checkbox" value="M" class="size-filter"> M (48-50)</label>
+                            <label class="filter-option"><input type="checkbox" value="L" class="size-filter"> L (52-54)</label>
+                            <label class="filter-option"><input type="checkbox" value="XL" class="size-filter"> XL (56-58)</label>
+                            <label class="filter-option"><input type="checkbox" value="XXL" class="size-filter"> XXL (60-62)</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-header" onclick="toggleFilter(this)">
+                            <h4>👚 Тип одежды</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="filter-content">
+                            <label class="filter-option"><input type="checkbox" value="dress" class="type-filter"> Платья</label>
+                            <label class="filter-option"><input type="checkbox" value="jeans" class="type-filter"> Джинсы</label>
+                            <label class="filter-option"><input type="checkbox" value="blouse" class="type-filter"> Блузы</label>
+                            <label class="filter-option"><input type="checkbox" value="coat" class="type-filter"> Пальто</label>
+                            <label class="filter-option"><input type="checkbox" value="sweater" class="type-filter"> Свитеры</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-header" onclick="toggleFilter(this)">
+                            <h4>💰 Цена</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="filter-content">
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <input type="number" id="minPrice" placeholder="от" style="border-radius: 30px; padding: 8px 15px; border: 1px solid #f0e4d5; width: 100px;">
+                                <input type="number" id="maxPrice" placeholder="до" style="border-radius: 30px; padding: 8px 15px; border: 1px solid #f0e4d5; width: 100px;">
+                            </div>
+                            <button id="applyPrice" class="reset-filters" style="margin-top: 5px;">Применить цену</button>
+                        </div>
+                    </div>
+                    
+                    <button id="resetFilters" class="reset-filters">Сбросить все фильтры</button>
+                </aside>
+                
+                <div style="flex: 3;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap;">
+                        <h2 style="color: #573f3f;">Одежда для мам</h2>
+                        <select id="sortSelect" style="border-radius: 30px; padding: 10px 20px; border: 1px solid #f0e4d5;">
+                            <option value="default">Сортировка</option>
+                            <option value="price-asc">Цена: по возрастанию</option>
+                            <option value="price-desc">Цена: по убыванию</option>
+                            <option value="name-asc">Название: А-Я</option>
+                            <option value="name-desc">Название: Я-А</option>
+                        </select>
+                    </div>
+                    
+                    <div class="products-grid" id="productsGrid"></div>
+                    <div id="noProducts" style="text-align: center; padding: 50px; display: none;">
+                        <i class="fas fa-tshirt fa-3x" style="color: #edd7cb;"></i>
+                        <p style="color: #7f5a5a; margin-top: 20px;">Товары не найдены</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Модальные окна -->
+    <div class="modal" id="callModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeCallModal()">×</button>
+            <h2 class="modal-title">Заказать звонок</h2>
+            <form class="modal-form" id="callForm">
+                <div class="field"><label class="label">Ваше имя</label><input class="input" type="text" id="callName" required></div>
+                <div class="field"><label class="label">Телефон</label><input class="input" type="tel" id="callPhone" required></div>
+                <div class="field"><label class="label">Удобное время</label><input class="input" type="text" id="callTime"></div>
+                <div class="field"><label class="checkbox"><input type="checkbox" id="callAgreement" required> Я согласен на обработку данных</label></div>
+                <button type="submit" class="button">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="cartModal">
+        <div class="modal-content max-width-600" style="max-width: 600px;">
+            <button class="modal-close" onclick="closeCart()">×</button>
+            <h2 class="modal-title">🛍️ Корзина</h2>
+            <div id="cartItems" style="max-height: 400px; overflow-y: auto;"></div>
+            <div style="border-top: 2px solid #f0e4d5; margin-top: 20px; padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; font-size: 22px; font-weight: 600; color: #b4515b;">
+                    <span>Итого:</span>
+                    <span id="cartTotal">0</span>
+                    <span>₽</span>
+                </div>
+                <button class="button" style="width: 100%; margin-top: 20px;" onclick="alert('Оформление заказа будет доступно в следующей версии!')">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="background: #f2d9d0; padding: 20px; text-align: center;">
+        <p style="font-size: 20px;">Самая Красивая • твой любимый магазин</p>
+    </div>
+
+    <script src="scripts/menu.js"></script>
+    <script src="scripts/cart.js"></script>
+    <script>
+        const products = [
+            { id: 1, name: "Элегантное платье", size: "S", type: "dress", price: 3499, image: "👗", sizes: ["XS", "S", "M"] },
+            { id: 2, name: "Классические джинсы", size: "M", type: "jeans", price: 2899, image: "👖", sizes: ["S", "M", "L"] },
+            { id: 3, name: "Шёлковая блуза", size: "L", type: "blouse", price: 1999, image: "👚", sizes: ["M", "L", "XL"] },
+            { id: 4, name: "Кашемировый свитер", size: "XL", type: "sweater", price: 4299, image: "🧥", sizes: ["L", "XL", "XXL"] },
+            { id: 5, name: "Платье-футляр", size: "XS", type: "dress", price: 3999, image: "👗", sizes: ["XS", "S"] },
+            { id: 6, name: "Джинсы скинни", size: "L", type: "jeans", price: 2599, image: "👖", sizes: ["M", "L", "XL"] },
+            { id: 7, name: "Пальто двубортное", size: "M", type: "coat", price: 8999, image: "🧥", sizes: ["S", "M", "L", "XL"] },
+            { id: 8, name: "Блуза с воротником", size: "S", type: "blouse", price: 1799, image: "👚", sizes: ["XS", "S", "M"] },
+            { id: 9, name: "Свитер оверсайз", size: "XXL", type: "sweater", price: 3499, image: "🧥", sizes: ["XL", "XXL"] },
+            { id: 10, name: "Платье-макси", size: "L", type: "dress", price: 4599, image: "👗", sizes: ["M", "L", "XL"] }
+        ];
+
+        let currentProducts = [...products];
+
+        function toggleFilter(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.classList.toggle('active');
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const noProducts = document.getElementById('noProducts');
+            
+            if (currentProducts.length === 0) {
+                grid.style.display = 'none';
+                noProducts.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            noProducts.style.display = 'none';
+            
+            grid.innerHTML = currentProducts.map(product => `
+                <div class="product-card">
+                    <div class="product-image">${product.image}</div>
+                    <h3 class="product-title">${product.name}</h3>
+                    <div class="product-size">Размеры: ${product.sizes.join(', ')}</div>
+                    <div class="product-price">${product.price}₽</div>
+                    <button class="add-to-cart" onclick="addToCart({id: ${product.id}, name: '${product.name}', price: ${product.price}, image: '${product.image}'})">
+                        <i class="fas fa-shopping-cart"></i> В корзину
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function applyFilters() {
+            const selectedSizes = Array.from(document.querySelectorAll('.size-filter:checked')).map(cb => cb.value);
+            const selectedTypes = Array.from(document.querySelectorAll('.type-filter:checked')).map(cb => cb.value);
+            const minPrice = document.getElementById('minPrice').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+            
+            currentProducts = products.filter(product => {
+                if (selectedSizes.length > 0 && !selectedSizes.some(s => product.sizes.includes(s))) return false;
+                if (selectedTypes.length > 0 && !selectedTypes.includes(product.type)) return false;
+                if (minPrice && product.price < parseInt(minPrice)) return false;
+                if (maxPrice && product.price > parseInt(maxPrice)) return false;
+                return true;
+            });
+            
+            applySort();
+        }
+
+        function applySort() {
+            const sortValue = document.getElementById('sortSelect').value;
+            if (sortValue === 'price-asc') currentProducts.sort((a, b) => a.price - b.price);
+            else if (sortValue === 'price-desc') currentProducts.sort((a, b) => b.price - a.price);
+            else if (sortValue === 'name-asc') currentProducts.sort((a, b) => a.name.localeCompare(b.name));
+            else if (sortValue === 'name-desc') currentProducts.sort((a, b) => b.name.localeCompare(a.name));
+            renderProducts();
+        }
+
+        function resetFilters() {
+            document.querySelectorAll('.size-filter:checked, .type-filter:checked').forEach(cb => cb.checked = false);
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('sortSelect').value = 'default';
+            currentProducts = [...products];
+            renderProducts();
+        }
+
+        document.getElementById('resetFilters').addEventListener('click', resetFilters);
+        document.getElementById('applyPrice').addEventListener('click', applyFilters);
+        document.querySelectorAll('.size-filter, .type-filter').forEach(cb => cb.addEventListener('change', applyFilters));
+        document.getElementById('sortSelect').addEventListener('change', applyFilters);
+        
+        renderProducts();
+    </script>
+</body>
+</html>
