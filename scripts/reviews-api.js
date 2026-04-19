@@ -129,3 +129,6 @@ class ReviewsLoader {
         ];
     }
 }
+
+// Создаем глобальный экземпляр для доступа из других скриптов
+window.reviewsLoader = new ReviewsLoader();

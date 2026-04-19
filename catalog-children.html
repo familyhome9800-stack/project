@@ -12,8 +12,9 @@
         
         .header { background: #ffffff; padding: 16px 0; border-bottom: 1px solid #f0e4d5; position: relative; }
         .header-inner { display: flex; align-items: center; justify-content: space-between; }
-        .cart-icon-wrapper { position: relative; cursor: pointer; margin-right: 20px; }
-        .cart-icon-wrapper:hover { transform: scale(1.1); }
+        .icon-wrapper { position: relative; cursor: pointer; transition: 0.3s; }
+        .icon-wrapper:hover { transform: scale(1.1); }
+        .icon-wrapper i { font-size: 24px; color: #b76e79; }
         .cart-count { position: absolute; top: -10px; right: -12px; background: #b76e79; color: white; font-size: 12px; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: none; align-items: center; justify-content: center; }
         
         .burger-menu { display: flex; flex-direction: column; justify-content: space-between; width: 30px; height: 22px; cursor: pointer; z-index: 1001; }
@@ -54,7 +55,8 @@
         .product-title { font-size: 20px; font-weight: 500; color: #402d2d; }
         .product-price { font-size: 24px; font-weight: 600; color: #b4515b; margin: 10px 0; }
         .product-size { font-size: 14px; color: #7f5a5a; margin-bottom: 10px; }
-        .add-to-cart { width: 100%; padding: 12px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border: none; border-radius: 50px; cursor: pointer; }
+        .add-to-cart { width: 100%; padding: 12px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .add-to-cart:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(183,110,121,0.3); }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal.active { display: flex; opacity: 1; }
@@ -65,7 +67,10 @@
         .modal-form .field { margin-bottom: 20px; }
         .modal-form .label { color: #573f3f; margin-bottom: 5px; display: block; }
         .modal-form .input { width: 100%; border-radius: 30px; border: 2px solid #f0e4d5; padding: 12px 20px; }
-        .modal-form .button { width: 100%; padding: 16px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border: none; border-radius: 50px; font-size: 20px; cursor: pointer; margin-top: 20px; }
+        .modal-form .checkbox { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .modal-form .checkbox input { width: 18px; height: 18px; accent-color: #b76e79; }
+        .modal-form .button { width: 100%; padding: 16px; background: linear-gradient(45deg, #b76e79, #d4a59a); color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: 500; cursor: pointer; transition: 0.3s; margin-top: 20px; }
+        .modal-form .button:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(183,110,121,0.3); }
         
         .cart-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #f0e4d5; }
         .cart-item-image { width: 50px; height: 50px; background: #faece5; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
@@ -77,6 +82,25 @@
         .cart-qty-btn:hover { background: #b76e79; color: white; }
         .cart-item-total { min-width: 70px; font-weight: 600; color: #b4515b; }
         .cart-remove-btn { background: none; border: none; color: #f14668; cursor: pointer; font-size: 18px; }
+        
+        /* Кнопка ОФОРМИТЬ ЗАКАЗ в корзине */
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #b76e79, #d4a59a);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+        .checkout-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(183,110,121,0.3);
+        }
         
         .row { display: flex; gap: 30px; flex-wrap: wrap; }
         @media (max-width: 768px) { .filter-sidebar { position: static; margin-bottom: 30px; } }
@@ -92,8 +116,11 @@
                 </div>
             </a>
             <div style="display: flex; align-items: center; gap: 20px;">
-                <div class="cart-icon-wrapper" onclick="openCart()">
-                    <i class="fas fa-shopping-bag" style="font-size: 24px; color: #b76e79; cursor: pointer;"></i>
+                <div class="icon-wrapper" onclick="window.location.href='login.html'">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="icon-wrapper" onclick="window.openCart()">
+                    <i class="fas fa-shopping-bag"></i>
                     <span class="cart-count" id="cartCount">0</span>
                 </div>
                 <div class="burger-menu" id="burgerMenu">
@@ -119,7 +146,7 @@
                     <a href="index.html#contacts" class="menu-item">Как нас найти?</a>
                 </div>
             </div>
-            <button class="call-button" onclick="openCallModal()">Заказать звонок</button>
+            <button class="call-button" onclick="window.openCallModal()">Заказать звонок</button>
         </div>
         <div class="menu-overlay" id="menuOverlay"></div>
     </header>
@@ -128,11 +155,11 @@
         <div class="container">
             <div class="row">
                 <aside class="filter-sidebar" style="flex: 1; min-width: 250px;">
-                    <h3 class="filter-title">👶 Фильтры для детей</h3>
+                    <h3 class="filter-title"> Фильтры для детей</h3>
                     
                     <div class="filter-group">
                         <div class="filter-header" onclick="toggleFilter(this)">
-                            <h4>📅 Возраст</h4>
+                            <h4> Возраст</h4>
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="filter-content">
@@ -156,7 +183,7 @@
                     
                     <div class="filter-group">
                         <div class="filter-header" onclick="toggleFilter(this)">
-                            <h4>📏 Рост (см)</h4>
+                            <h4> Рост (см)</h4>
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="filter-content">
@@ -181,7 +208,7 @@
                     
                     <div class="filter-group">
                         <div class="filter-header" onclick="toggleFilter(this)">
-                            <h4>👤 Пол</h4>
+                            <h4> Пол</h4>
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="filter-content">
@@ -218,7 +245,7 @@
 
     <div class="modal" id="callModal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeCallModal()">×</button>
+            <button class="modal-close" onclick="window.closeCallModal()">×</button>
             <h2 class="modal-title">Заказать звонок</h2>
             <form class="modal-form" id="callForm">
                 <div class="field"><label class="label">Ваше имя</label><input class="input" type="text" id="callName" required></div>
@@ -232,7 +259,7 @@
 
     <div class="modal" id="cartModal">
         <div class="modal-content max-width-600" style="max-width: 600px;">
-            <button class="modal-close" onclick="closeCart()">×</button>
+            <button class="modal-close" onclick="window.closeCart()">×</button>
             <h2 class="modal-title">🛍️ Корзина</h2>
             <div id="cartItems" style="max-height: 400px; overflow-y: auto;"></div>
             <div style="border-top: 2px solid #f0e4d5; margin-top: 20px; padding-top: 20px;">
@@ -241,7 +268,7 @@
                     <span id="cartTotal">0</span>
                     <span>₽</span>
                 </div>
-                <button class="button" style="width: 100%; margin-top: 20px;" onclick="alert('Оформление заказа будет доступно в следующей версии!')">Оформить заказ</button>
+                <button class="checkout-btn" onclick="alert('Оформление заказа будет доступно в следующей версии!')">Оформить заказ</button>
             </div>
         </div>
     </div>
@@ -294,7 +321,7 @@
                     <h3 class="product-title">${product.name}</h3>
                     <div class="product-size">Возраст: ${product.age} мес / Рост: ${product.height} см</div>
                     <div class="product-price">${product.price}₽</div>
-                    <button class="add-to-cart" onclick="addToCart({id: ${product.id}, name: '${product.name}', price: ${product.price}, image: '${product.image}'})">
+                    <button class="add-to-cart" onclick="window.addToCart({id: ${product.id}, name: '${product.name}', price: ${product.price}, image: '${product.image}'})">
                         <i class="fas fa-shopping-cart"></i> В корзину
                     </button>
                 </div>

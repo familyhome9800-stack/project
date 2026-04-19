@@ -1,5 +1,4 @@
 // Карусель отзывов с автоматической загрузкой
-const reviewsLoader = new ReviewsLoader();
 let currentSlide = 0;
 let slidesToShow = 3;
 let allReviews = [];
@@ -9,11 +8,11 @@ async function loadReviews() {
     showLoading();
     
     try {
-        allReviews = await reviewsLoader.loadAllReviews();
+        allReviews = await window.reviewsLoader.loadAllReviews();
         renderReviews();
     } catch (error) {
         console.error('Ошибка загрузки отзывов:', error);
-        allReviews = reviewsLoader.getFallbackReviews();
+        allReviews = window.reviewsLoader.getFallbackReviews();
         renderReviews();
     }
 }
@@ -128,7 +127,7 @@ window.slideReviews = function(direction) {
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
     updateSlidesToShow();
-    loadReviews(); // Загружаем отзывы
+    loadReviews();
 });
 
 window.addEventListener('resize', function() {

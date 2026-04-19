@@ -5,19 +5,16 @@ class CartManager {
         this.updateCartIcon();
     }
 
-    // Загрузка корзины из localStorage
     loadCart() {
         const saved = localStorage.getItem('shoppingCart');
         return saved ? JSON.parse(saved) : [];
     }
 
-    // Сохранение корзины в localStorage
     saveCart() {
         localStorage.setItem('shoppingCart', JSON.stringify(this.cart));
         this.updateCartIcon();
     }
 
-    // Добавление товара в корзину
     addItem(product) {
         const existingItem = this.cart.find(item => item.id === product.id);
         
@@ -37,13 +34,11 @@ class CartManager {
         return this.getTotalCount();
     }
 
-    // Удаление товара из корзины
     removeItem(id) {
         this.cart = this.cart.filter(item => item.id !== id);
         this.saveCart();
     }
 
-    // Изменение количества
     updateQuantity(id, quantity) {
         const item = this.cart.find(item => item.id === id);
         if (item) {
@@ -52,28 +47,23 @@ class CartManager {
         }
     }
 
-    // Получение общего количества товаров
     getTotalCount() {
         return this.cart.reduce((sum, item) => sum + item.quantity, 0);
     }
 
-    // Получение общей суммы
     getTotalPrice() {
         return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     }
 
-    // Очистка корзины
     clearCart() {
         this.cart = [];
         this.saveCart();
     }
 
-    // Получение всех товаров
     getItems() {
         return [...this.cart];
     }
 
-    // Обновление иконки корзины
     updateCartIcon() {
         const cartCount = document.getElementById('cartCount');
         if (cartCount) {
@@ -83,7 +73,6 @@ class CartManager {
         }
     }
 
-    // Открытие модального окна корзины
     openCartModal() {
         const modal = document.getElementById('cartModal');
         if (modal) {
@@ -93,7 +82,6 @@ class CartManager {
         }
     }
 
-    // Закрытие модального окна корзины
     closeCartModal() {
         const modal = document.getElementById('cartModal');
         if (modal) {
@@ -102,7 +90,6 @@ class CartManager {
         }
     }
 
-    // Рендер содержимого корзины
     renderCartModal() {
         const cartItemsContainer = document.getElementById('cartItems');
         const cartTotalSpan = document.getElementById('cartTotal');
@@ -167,8 +154,7 @@ window.cartManager = new CartManager();
 // Функции для глобального вызова
 window.addToCart = function(product) {
     const count = window.cartManager.addItem(product);
-    // Анимация иконки корзины
-    const cartIcon = document.querySelector('.cart-icon-wrapper');
+    const cartIcon = document.querySelector('.icon-wrapper i.fa-shopping-bag')?.parentElement;
     if (cartIcon) {
         cartIcon.style.transform = 'scale(1.2)';
         setTimeout(() => {
